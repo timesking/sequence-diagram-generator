@@ -20,7 +20,7 @@ var sequenceDiagramTemplate = require('./sequenceDiagram.tpl.js');
 
 var sequenceDiagram;
 var sequenceDiagramCaption = "";
-var sequenceDiagramTheme = "hand";
+var sequenceDiagramTheme = argv.type;
 var tempFile = ".tmp.html";
 
 sequenceDiagram = fs.readFileSync(argv.f, 'utf8');
