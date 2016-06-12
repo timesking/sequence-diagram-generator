@@ -36,8 +36,50 @@ var sequenceDiagramOutput = Handlebars.templates.sequenceDiagram(handlebarsConte
 
 fs.writeFileSync(tempFile, sequenceDiagramOutput);
 
-new Nightmare()
-        .goto(tempFile)
-        .screenshot(argv.o)
-        .run();
+// get below codes from https://github.com/segmentio/nightmare/pull/358
 
+Nightmare.action('screenshotSelector', function (path, selector, done) {
+  console.log('.screenshotSelector()');
+  if (typeof selector === 'function') {
+    done = selector;
+    selector = path;
+    path = undefined;
+  };
+  var self = this;
+
+  this.evaluate_now(function (selector) {
+    var element = document.querySelector(selector);
+    if (element) {
+      var rect = element.getBoundingClientRect();
+      return {
+        x: Math.round(rect.left),
+        y: Math.round(rect.top),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height)
+      };
+    }
+  }, function (a, clip) {
+    if (!clip) {
+      throw new Error('invalid selector "' + selector + '"');
+    }
+    console.log('width:'+clip.width+" height:"+clip.height)
+    self.child.call('screenshot', path, clip, function (error, img) {
+        var buf = new Buffer(img.data);
+        console.log('.screenshot() captured with length %s', buf.length);
+        path ? fs.writeFile(path, buf, done) : done(null, buf);
+    });
+
+    //not work with nightmare 2.5.1
+    // self.child.once('screenshot', function (img) {
+    //   var buf = new Buffer(img.data);
+    //   console.log('.screenshotSelector() captured with length %s', buf.length);
+    //   path ? fs.writeFile(path, buf, done) : done(null, buf);
+    // });
+    // self.child.emit.('screenshot', path, clip);
+
+  }, selector);
+})
+
+new Nightmare()
+        .goto('file://' + __dirname +'/'+ tempFile)
+        .screenshotSelector(argv.o, 'svg').end().then()
