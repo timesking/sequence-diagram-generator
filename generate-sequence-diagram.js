@@ -20,19 +20,36 @@ var sequenceDiagramTemplate = require('./sequenceDiagram.tpl.js');
 
 var sequenceDiagram;
 var sequenceDiagramCaption = "";
-var sequenceDiagramTheme = argv.type;
+// console.log("type of :" +argv.type)
+var sequenceDiagramTheme = "hand";//argv.type;
 var tempFile = ".tmp.html";
 
+
+var path = require('path');
+var ext = path.extname(argv.f).substring(1);
+console.log(ext);
 sequenceDiagram = fs.readFileSync(argv.f, 'utf8');
 
 var handlebarsContext = {
-    "sequenceDiagram": sequenceDiagram,
+    "diagramTxt": sequenceDiagram,
     "caption": sequenceDiagramCaption,
     "theme": sequenceDiagramTheme
+    // "sequenceDiagram": true
+    // "flowDiagram": true
 };
 
-var sequenceDiagramOutput = Handlebars.templates.sequenceDiagram(handlebarsContext);
+switch (ext) {
+  case "flow":
+    handlebarsContext.flowDiagram = true;
+    break;
+  case "sequence":
+    handlebarsContext.sequenceDiagram = true;
+    break;
+  default:
 
+}
+
+var sequenceDiagramOutput = Handlebars.templates.sequenceDiagram(handlebarsContext);
 
 fs.writeFileSync(tempFile, sequenceDiagramOutput);
 

@@ -14,7 +14,7 @@
 </head>
 
 <textarea id="language" rows="10" cols="50" style="display: none">
-    {{{sequenceDiagram}}}
+    {{{diagramTxt}}}
 </textarea>
 
 <div style="font-size:80%; text-align:center; display: inline-block">
@@ -40,10 +40,17 @@
 -->
 
 <script src="sequence-diagram-min.js"></script>
+<script src="flowchart.min.js"></script>
 <script>
     $(document).ready(function () {
+{{#if sequenceDiagram}}
         var diagram = Diagram.parse($('#language').val());
         diagram.drawSVG('diagram', {theme: '{{theme}}'});
+{{/if}}
+{{#if flowDiagram}}
+        var diagram = flowchart.parse($('#language').val());
+        diagram.drawSVG('diagram');
+{{/if}}
     });
 </script>
 </body>
