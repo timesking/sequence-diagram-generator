@@ -4,6 +4,15 @@ Sequence Diagram Generator
 
 This project can be used to generate sequence diagrams from the command line after defining the diagram with a simple DSL. It's a node wrapper around js-sequence-diagrams, check this page for DSL syntax http://bramp.github.io/js-sequence-diagrams/
 
+
++ add Support for flowchart.js
++ distinguish flow or sequence with file extented name. look run-demo.sh
+```
+./generate-sequence-diagram.js -f sequence-diagram.sequence -o sequence-diagram.png
+./generate-sequence-diagram.js -f flowchart-diagram.flow -o flow-diagram.png
+```
+* Upgrade nightmare to 2.5.1 the latest with Electron
+
 Requirements
 --------------
 node.js, npm, phantomjs, handlebars
